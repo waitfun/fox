@@ -14,7 +14,7 @@ Route::get('think', function () {
 });
 //http://www.fox.cc/video/cate
 //Route::rule('video/cate','video/index/test');
-Route::get('video/cate','video/index/test');
+//Route::get('video/cate','video/index/test');
 
 return [
 ];
