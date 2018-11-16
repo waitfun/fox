@@ -9,9 +9,9 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-Route::get('think', function () {
-    return 'hello,ThinkPHP5!';
-});
+// Route::get('think', function () {
+//     return 'hello,ThinkPHP5!';
+// });
 //http://www.fox.cc/video/cate
 //Route::rule('video/cate','video/index/test');
 //Route::get('video/cate','video/index/test');
