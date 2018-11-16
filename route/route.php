@@ -12,9 +12,11 @@
 Route::get('think', function () {
     return 'hello,ThinkPHP5!';
 });
-
-Route::get('hello/:name', 'index/hello');
+//http://www.fox.cc/video/cate
+//Route::rule('video/cate','video/index/test');
+Route::get('video/cate','video/index/test');
 
 return [
-
 ];
+
+
