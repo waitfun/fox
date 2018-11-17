@@ -142,5 +142,7 @@ return [
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '',
+    //图片地址,如果图片是url,不用配置
+    'img_path'  => ''
 
 ];

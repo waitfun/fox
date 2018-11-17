@@ -35,7 +35,7 @@ class Index
 	    	echo json_encode($data,JSON_UNESCAPED_UNICODE);
 	    }
     }
-
+    //轮播图数据
     public function banner()
     {
     	$data = db('video_banner') 
@@ -47,6 +47,21 @@ class Index
 		foreach ($data as $key => $value) 
 		{
 			$data[$key]['create_time'] = date('Y-m-d H:i:s',$value['create_time']);//转成格式
+			$data[$key]['banner_image'] = config('img_path').$value['banner_image'];
+		}
+        return $data;
+    }
+    //首页数据
+    public function film()
+    {
+    	$data = db('video_film') 
+				-> where(['status'=>0]) 
+				-> limit(12)
+				-> select();
+		foreach ($data as $key => $value) 
+		{
+			$data[$key]['name'] = mb_substr($value['name'],0,7,'utf-8')."...";
+			$data[$key]['performer'] = mb_substr($value['performer'],0,5,'utf-8')."...";
 		}
         return $data;
     }
