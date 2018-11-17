@@ -58,11 +58,7 @@ class Index
 				-> where(['status'=>0]) 
 				-> limit(12)
 				-> select();
-		foreach ($data as $key => $value) 
-		{
-			$data[$key]['name'] = mb_substr($value['name'],0,7,'utf-8')."...";
-			$data[$key]['performer'] = mb_substr($value['performer'],0,5,'utf-8')."...";
-		}
+		
         return $data;
     }
 }
