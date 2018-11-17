@@ -61,4 +61,13 @@ class Index
 		
         return $data;
     }
+    //某一详细数据
+    public function details()
+    {
+    	$id = $this->request->param('id');
+    	$data = db('video_film') 
+				-> where(['status'=>0,'id'=>$id]) 
+				-> find();
+		return $data;
+    }
 }
