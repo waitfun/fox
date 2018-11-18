@@ -70,4 +70,18 @@ class Index
 				-> find();
 		return $data;
     }
+    public function search()
+    {
+    	$keyword = $this->request->param('keyword');
+    	$data = db('video_film')
+    			-> field('id,name,descr,image,performer,create_time,rank,director')
+				-> where(['status'=>0]) 
+				-> where('name','like','%'.$keyword.'%')
+				-> select();
+		if (empty($data)) 
+		{
+			return ['data'=>'查找的信息不存在','status'=>'no found','code'=>'101'];
+		}
+		return ['data'=>$data,'status'=>'scuess','code'=>'200'];
+    }
 }
