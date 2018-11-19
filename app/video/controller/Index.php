@@ -58,7 +58,10 @@ class Index
 				-> where(['status'=>0]) 
 				-> limit(12)
 				-> select();
-		
+		foreach ($data as $key => $value) 
+		{
+			$data[$key]['play_url'] = '//www.82190555.com/video.php?url='.$value['play_url'];//转成格式
+		}
         return $data;
     }
     //某一详细数据
@@ -84,4 +87,5 @@ class Index
 		}
 		return ['data'=>$data,'status'=>'scuess','code'=>'200'];
     }
+   
 }
