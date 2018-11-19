@@ -55,7 +55,8 @@ class Index
     public function film()
     {
     	$data = db('video_film') 
-				-> where(['status'=>0]) 
+				-> where(['status'=>0])
+				-> order('id desc')
 				-> limit(12)
 				-> select();
 		
@@ -75,7 +76,7 @@ class Index
     {
     	$keyword = $this->request->param('keyword');
     	$data = db('video_film')
-    			-> field('id,name,descr,image,performer,create_time,rank,director')
+    			-> field('id,name,descr,image_url,performer,create_time,rank,director')
 				-> where(['status'=>0]) 
 				-> where('name','like','%'.$keyword.'%')
 				-> select();
