@@ -58,10 +58,7 @@ class Index
 				-> where(['status'=>0]) 
 				-> limit(12)
 				-> select();
-		foreach ($data as $key => $value) 
-		{
-			$data[$key]['play_url'] = '//www.82190555.com/video.php?url='.$value['play_url'];//转成格式
-		}
+		
         return $data;
     }
     //某一详细数据
@@ -71,6 +68,7 @@ class Index
     	$data = db('video_film') 
 				-> where(['status'=>0,'id'=>$id]) 
 				-> find();
+		$data['play_url'] = '//www.82190555.com/video.php?url='.$data['play_url'];//转成格式
 		return $data;
     }
     public function search()
