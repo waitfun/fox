@@ -68,7 +68,7 @@ class Index
     	$data = db('video_film') 
 				-> where(['status'=>0,'id'=>$id]) 
 				-> find();
-		$data['play_url'] = '//www.82190555.com/video.php?url='.$data['play_url'];//转成格式
+		$data['play_url'] = 'http://www.82190555.com/video.php?url='.$data['play_url'];//转成格式
 		return $data;
     }
     public function search()
