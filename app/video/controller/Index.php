@@ -1,6 +1,7 @@
 <?php
 namespace app\video\controller;
 use think\Request;
+use think\Db;
 
 class Index
 {
@@ -51,14 +52,19 @@ class Index
 		}
         return $data;
     }
-    //首页数据
+    //推荐数据，随机12条，评分大于8的
     public function film()
     {
-    	$data = db('video_film') 
-				-> where(['status'=>0])
-				-> order('id desc')
-				-> limit(12)
-				-> select();
+    // 	$data = db('video_film') 
+				// -> where(['status'=>0])
+				// -> order('id desc')
+				// -> limit(12)
+				// -> select();
+    	$sql = "SELECT * FROM video_film AS t1 
+				JOIN 
+				(SELECT ROUND(RAND() * (SELECT MAX(id) FROM video_film)) AS id) AS t2 
+				WHERE t1.id >= t2.id and score>=8 ORDER BY t1.id ASC LIMIT 12";
+		$data = Db::query($sql);
 		
         return $data;
     }
