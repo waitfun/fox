@@ -76,7 +76,7 @@ class Index
     {
     	$keyword = $this->request->param('keyword');
     	$data = db('video_film')
-    			-> field('id,name,descr,image_url,performer,create_time,rank,director')
+    			-> field('id,name,descr,image_url,performer,create_time,score,director')
 				-> where(['status'=>0]) 
 				-> where('name','like','%'.$keyword.'%')
 				-> select();
