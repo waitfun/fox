@@ -60,7 +60,7 @@ class Index
 				// -> order('id desc')
 				// -> limit(12)
 				// -> select();
-    	$sql = "SELECT * FROM video_film AS t1 
+    	$sql = "SELECT t1.id,t1.image_url,t1.name,t1.performer FROM video_film AS t1 
 				JOIN 
 				(SELECT ROUND(RAND() * (SELECT MAX(id) FROM video_film)) AS id) AS t2 
 				WHERE t1.id >= t2.id and score>=8 ORDER BY t1.id ASC LIMIT 12";
