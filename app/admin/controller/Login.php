@@ -35,8 +35,9 @@ class Login
 			$result['login_ip'] = $login_log['login_ip'];
 			$result['login_time'] = date('Y-m-d H:i:s',$login_log['login_time']);
 			$result['login_address'] = $login_log['login_address'];
-			$address = json_decode(file_get_contents('http://ip.taobao.com/service/getIpInfo.php?ip='.$this->request->ip(0, true)));
-			$ip_address = $address->data->country.' '.$address->data->area.' '.$address->data->region.' '.$address->data->city.' '.$address->data->isp;
+			
+			$address = $this ->curl_get('http://ip.taobao.com/service/getIpInfo.php?ip='.$this->request->ip(0, true));
+			$ip_address = $address['data']['country'].' '.$address['data']['area'].' '.$address['data']['region'].' '.$address['data']['city'].' '.$address['data']['isp'];
 			//登录日志
 			$params = [
 				'userid' => $result['id'],
@@ -65,6 +66,19 @@ class Login
 		$jwt = JWT::encode($token, $key);
 		return $jwt;
 	}
+	public function curl_get($url)
+    {
+        $info = curl_init();
+        curl_setopt($info,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($info,CURLOPT_HEADER,0);
+        curl_setopt($info,CURLOPT_NOBODY,0);
+        curl_setopt($info,CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($info,CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($info,CURLOPT_URL,$url);
+        $result = json_decode(curl_exec($info),true);
+        curl_close($info);
+        return $result;
+    }
 	public function de_token()
 	{
 		$token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDQwODIzMjMsImV4cCI6MTU0NDY4NzEyMywiZGF0YSI6eyJpZCI6MSwibmFtZSI6InVzZXIiLCJwYXNzd29yZCI6IjEyMyIsIm5pY2tuYW1lIjpudWxsLCJlbWFpbCI6bnVsbCwicGhvbmUiOm51bGwsImxvZ2luX2lwIjoiMTI3LjAuMC4xIiwibG9naW5fdGltZSI6IjIwMTgtMTItMDYgMTU6MzE6MDUiLCJzdGF0dXMiOjAsInJvbGVfaWQiOjIsInJvbGVfbmFtZSI6Ilx1NjY2ZVx1OTAxYVx1N2JhMVx1NzQwNlx1NTQ1OCIsImxvZ2luX2FkZHJlc3MiOm51bGx9fQ.tNKjxGo8bWoWiyTo54_Da99QyMZc6YDdliPshORZooc";
@@ -78,9 +92,8 @@ class Login
 	}
 	public function get_header()
 	{
-		$url = 'http://ip.taobao.com/service/getIpInfo.php?ip='.$this->request->ip(0, true);
-		$json = file_get_contents($url);
-		$ip_address = json_decode($json);
-		return $ip_address->data->city;
+		$address = $this ->curl_get('http://ip.taobao.com/service/getIpInfo.php?ip='.$this->request->ip(0, true));
+			$ip_address = $address['data']['country'];
+		return $ip_address;
 	}
 }
