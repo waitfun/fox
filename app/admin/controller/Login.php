@@ -94,6 +94,6 @@ class Login
 	{
 		$address = $this ->curl_get('http://ip.taobao.com/service/getIpInfo.php?ip='.$this->request->ip(0, true));
 			$ip_address = $address['data']['country'];
-		return $ip_address;
+		return $this->request->ip(0, true);
 	}
 }
