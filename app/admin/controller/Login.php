@@ -79,21 +79,11 @@ class Login
         curl_close($info);
         return $result;
     }
-	public function de_token()
+    public function login_out()
 	{
-		$token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDQwODIzMjMsImV4cCI6MTU0NDY4NzEyMywiZGF0YSI6eyJpZCI6MSwibmFtZSI6InVzZXIiLCJwYXNzd29yZCI6IjEyMyIsIm5pY2tuYW1lIjpudWxsLCJlbWFpbCI6bnVsbCwicGhvbmUiOm51bGwsImxvZ2luX2lwIjoiMTI3LjAuMC4xIiwibG9naW5fdGltZSI6IjIwMTgtMTItMDYgMTU6MzE6MDUiLCJzdGF0dXMiOjAsInJvbGVfaWQiOjIsInJvbGVfbmFtZSI6Ilx1NjY2ZVx1OTAxYVx1N2JhMVx1NzQwNlx1NTQ1OCIsImxvZ2luX2FkZHJlc3MiOm51bGx9fQ.tNKjxGo8bWoWiyTo54_Da99QyMZc6YDdliPshORZooc";
-		$token1 = Cache('token');
-		$decoded = JWT::decode($token1, config('token_key'), array('HS256'));
-		// foreach ($decoded as $key => $v) {
-		// 	$data = $v['data'];
-		// }
-		//$data = json_decode($decoded);
-		return $decoded->data->id;
+		$token = $this->request->param('token');
+		cache('Auth_'.$token, NULL);
+		return ['data'=>'退出成功','code'=>200];
 	}
-	public function get_header()
-	{
-		$address = $this ->curl_get('http://ip.taobao.com/service/getIpInfo.php?ip='.$this->request->ip(0, true));
-			$ip_address = $address['data']['country'];
-		return $this->request->ip(0, true);
-	}
+	
 }

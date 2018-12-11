@@ -20,6 +20,7 @@ class User extends Common
 		}
 
 	}
+	
 	public function change_pswd()
 	{
 
