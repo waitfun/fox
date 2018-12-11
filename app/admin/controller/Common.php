@@ -49,17 +49,12 @@ class Common //extends Controller
         $controller = $this->request->controller();
         $action     = $this->request->action();
         $rule       = strtolower($module . "/" . $controller . "/" . $action);
-        $notRequire = ["admin/user/login_out"];
-        if (!in_array($rule, $notRequire)) {
-            $auth       = new Auth();
-	        $status     = $auth -> check($userId,$rule);
-	        if ($status == false)
-	        {
-	        	throw new HttpExceptions('没有权限', 'Forbidden');
-	        }
-        } 
-       
-       
+        $auth       = new Auth();
+	    $status     = $auth -> check($userId,$rule);
+	    if ($status == false)
+	    {
+	       throw new HttpExceptions('没有权限', 'Forbidden');
+	    }
     }
    
 }

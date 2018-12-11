@@ -49,7 +49,7 @@ class Login
 			//session('admin_user',$result);
 			$token = $this -> get_token($result);
 			Cache('Auth_'.$token,$result, 60*60*24*7);
-			return $token;
+			return ['data'=>$token,'code'=>200,'msg'=>'登录成功'];
 		}else{
 			return false;
 		}
