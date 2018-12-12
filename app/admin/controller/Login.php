@@ -81,8 +81,9 @@ class Login
     }
     public function login_out()
 	{
-		$token = $this->request->param('token');
-		cache('Auth_'.$token, NULL);
+		$info =  $this->request->header();
+		$token = isset($info['authorization'])?$info['authorization']:null;
+		cache('Auth_'.$token, null);
 		return ['data'=>'退出成功','code'=>200];
 	}
 	

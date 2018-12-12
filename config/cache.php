@@ -15,7 +15,8 @@
 
 return [
     // 驱动方式
-    'type'   => 'File',
+    'type'   => 'redis',
+    'host'	=>	'127.0.0.1',
     // 缓存保存目录
     'path'   => '../runtime/cache/',
     // 缓存前缀
