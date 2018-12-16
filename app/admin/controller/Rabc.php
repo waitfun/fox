@@ -153,4 +153,16 @@ class Rabc extends Common
 			throw new HttpExceptions('请求方法错误', 'MethodNotAllowed');
 		}
 	}
+	//授权角色
+	public function get_auth_role()
+	{
+		$data = db('fox_auth_role') -> where(['status'=>0]) ->select();
+		if ($data) 
+		{
+			return ['data'=>$data,'code'=>'200'];
+		}else{
+			return ['data'=>'获取失败','code'=>'101'];
+		}
+
+	}
 }

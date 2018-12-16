@@ -147,6 +147,8 @@ return [
     //token key
     'token_key' => 'waitfun.cn',
     //密码加密盐
-    'password_solt' => 'waitfun'
+    'password_solt' => 'waitfun',
+    //加密字符
+    "authcode" => 'xVZrZ9RnIKNof2nbwF',
 
 ];

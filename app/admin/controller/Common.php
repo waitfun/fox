@@ -13,8 +13,8 @@ class Common //extends Controller
 	public function __construct()
     {
 		$this->request = request();
-		$info =  $this->request->header();
-		$token = isset($info['authorization'])?$info['authorization']:null;
+		$info          =  $this->request->header();
+		$token         = isset($info['authorization'])?$info['authorization']:null;
 		if (empty($token)) 
 		{
 			throw new HttpExceptions('未授权', 'Unauthorized');
@@ -28,20 +28,25 @@ class Common //extends Controller
 		{
 			throw new HttpExceptions('未授权', 'Unauthorized');
 		}
-		$userId = $decoded_token->data->id;
+		$userId       = $decoded_token->data->id;
 		$this ->cache = cache('Auth_'.$token);
-		$this -> checkAccess($userId);
+		$role_id      =$decoded_token->data->role_id;
+		$this -> checkAccess($userId,$role_id);
     }
      /**
      *  检查后台用户访问权限
      * @param int $userId 后台用户id
      * @return boolean 检查通过返回true
      */
-    public function checkAccess($userId)
+    public function checkAccess($userId,$role_id)
     {
     	//$userId = 1;
        // 如果用户id是1，则无需判断
         if ($userId == 1) {
+            return true;
+        }
+        //角色id是1，超级管理员
+        if ($role_id == 1) {
             return true;
         }
 
