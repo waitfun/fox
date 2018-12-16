@@ -139,15 +139,4 @@ class Rules extends Common
 			throw new HttpExceptions('请求方法错误', 'MethodNotAllowed');
 		}
 	}
-	//添加授权角色
-	public function add_role()
-	{
-		if ($this->request->isPost())
-		{
-			
-		}else{
-			throw new HttpExceptions('请求方法错误', 'MethodNotAllowed');
-		}
-	}
-	
 }

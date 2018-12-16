@@ -9,6 +9,7 @@ class Rabc extends Common
     {
     	parent::__construct();
 	}
+	//获取所有授权角色
 	public function get_all_role()
 	{
 		$result   = db('fox_auth_role')->field('id,create_time,name,remark,status')->select();

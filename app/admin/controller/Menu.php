@@ -11,11 +11,12 @@ class Menu extends Common
     {
     	parent::__construct();
 	}
-	//获取后台显示菜单
+	//获取后台显示菜单，此处不用做权限验证
     public function admin_menu()
 	{
 		$userid = $this ->cache['id'];
-		if ($userid == 1) 
+		$role_id = $this ->cache['role_id'];
+		if ($userid == 1||$role_id ==1) 
 		{
 			$result   = db('fox_admin_menu')->where(['parent_id'=>0,'status'=>0])->select();
 		    $res      = [];
@@ -29,18 +30,22 @@ class Menu extends Common
 
 		    return $res;
 		}else{
-			$role_id       = $this ->cache['role_id'];
 			
 			$result   = db('fox_admin_menu_access')->where(['parent_id'=>0,'status'=>0,'role_id'=> $role_id])->select();
 		    $res      = [];
-			foreach ($result as $key => $v) { 
+			foreach ($result as $key => $v) 
+			{ 
 				$dat  = db('fox_admin_menu_access') 
 					->where(['parent_id'=>$v['menu_id'],'status'=>0,'role_id'=> $role_id]) 
 					-> select () ;
 				$v['children'] = $dat;
 				$res []        = $v;
 			}
-
+			//默认系统首页
+			if(empty($res))
+			{
+				return db('fox_admin_menu')->where(['id'=>1,'status'=>0])->select();
+			}
 		    return $res;
 		}
 		

@@ -60,6 +60,7 @@ class Common //extends Controller
 	    {
 	       throw new HttpExceptions('没有权限', 'Forbidden');
 	    }
+	    
     }
    
 }

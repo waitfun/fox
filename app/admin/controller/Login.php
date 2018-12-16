@@ -21,7 +21,7 @@ class Login
 		{
 			return false;
 		}
-		$result = db('fox_admin_user') -> where(['name'=>$username,'password'=>$password,'status'=>0]) ->field('id,name as username,email,phone,avatar')-> find();
+		$result = db('fox_admin_user') -> where(['name'=>$username,'password'=>fox_password($password),'status'=>0]) ->field('id,name as username,email,phone,avatar')-> find();
 		if ($result) 
 		{
 			//取出角色id
@@ -51,7 +51,7 @@ class Login
 			Cache('Auth_'.$token,$result, 60*60*24*7);
 			return ['data'=>$token,'code'=>200,'msg'=>'登录成功'];
 		}else{
-			return false;
+			return ['data'=>'登录失败','code'=>101,'msg'=>'登录失败'];
 		}
 
 	}
