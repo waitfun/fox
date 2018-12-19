@@ -52,6 +52,12 @@ class Common
         if ($role_id == 1) {
             return true;
         }
+        //查看权限是否禁用
+        $role_data = db('auth_role') ->where(['id'=>$role_id]) ->find();
+        if ($role_data['status'] == -1) 
+        {
+        	throw new HttpExceptions('没有权限', 'Forbidden');
+        }
 
         $module     = $this->request->module();
         $controller = $this->request->controller();
