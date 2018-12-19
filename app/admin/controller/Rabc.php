@@ -116,7 +116,7 @@ class Rabc extends Common
 			$id     = isset($input['id']) ? $input['id'] : $this->error('id参数不存在');
 			$state  = db('auth_access') -> where(['role_id'=>$id]) -> delete();
 			$status = db('auth_role') -> where(['id'=>$id]) -> delete();
-			if ($status&&$state) 
+			if ($status) 
 			{
 				$this->success('删除成功');
 			}
