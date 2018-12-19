@@ -25,3 +25,17 @@ function fox_password($pw, $authCode = '')
     $result = md5(md5($authCode . $pw));
     return $result;
 } 
+
+function curl_get($url)
+{
+    $info = curl_init();
+    curl_setopt($info,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($info,CURLOPT_HEADER,0);
+    curl_setopt($info,CURLOPT_NOBODY,0);
+    curl_setopt($info,CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($info,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($info,CURLOPT_URL,$url);
+    $result = json_decode(curl_exec($info),true);
+    curl_close($info);
+    return $result;
+}

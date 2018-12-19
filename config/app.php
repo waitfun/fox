@@ -144,11 +144,14 @@ return [
     'exception_handle'       => '',
     //图片地址,如果图片是url,不用配置
     'img_path'  => '',
-    //token key
-    'token_key' => 'waitfun.cn',
+    //token 加密key
+    'token_key' => 'xVZrZ9RnIKNof2nbwF',
+    //Token过期时间
+    'token_exp' => 60*60*24*7,
     //密码加密盐
     'password_solt' => 'waitfun',
     //加密字符
     "authcode" => 'xVZrZ9RnIKNof2nbwF',
+    //
 
 ];

@@ -34,7 +34,7 @@ class Setting extends Common
 			return ['data'=>'密码长度至少8位','code'=>101];
 		}
 		$userid = $this ->cache['id'];
-		$pswd_exits = db('fox_admin_user') -> where(['id'=>$userid]) -> find();
+		$pswd_exits = db('admin_user') -> where(['id'=>$userid]) -> find();
 		if (fox_password($old_password)!=$pswd_exits['password']) 
 		{
 			return ['data'=>'旧密码错误','code'=>101];
@@ -43,7 +43,7 @@ class Setting extends Common
 		{
 			return ['data'=>'新密码和旧密码不能一样','code'=>101];
 		}
-		$status = db('fox_admin_user') -> where(['id'=>$userid])->update(['password'=>fox_password($new_password)]);
+		$status = db('admin_user') -> where(['id'=>$userid])->update(['password'=>fox_password($new_password)]);
 		if ($status) 
 		{
 			$info =  $this->request->header();

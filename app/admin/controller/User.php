@@ -14,58 +14,71 @@ class User extends Common
 	{
 		if (null != $this ->cache) 
 		{
-			return ['data'=>$this->cache,'code'=>'200'];
+			$this -> success('获取成功',$this->cache);
 		}else{
 			throw new HttpExceptions('未授权', 'Unauthorized');
 		}
 
 	}
-	//获取全部管理员
+	/**
+	 * @api {get} admin/user/get_all_man_user 获取全部管理员
+	 * @apiGroup user
+	 * @apiName get_all_man_user
+	 * @apiParam {int} id 规则id.
+	 * @apiSuccess {String} data 数据集.
+	 * @apiSuccess {int} code  状态码.
+	 */
 	public function get_all_man_user()
 	{
-		$data = db('fox_admin_user a') 
+		$data = db('admin_user a') 
 			-> field('a.id,a.name,a.nickname,a.email,a.phone,a.avatar,a.status')
-			-> join('fox_role_group b','a.id = b.user_id')
+			-> join('role_group b','a.id = b.user_id')
 			-> field('b.role_id')
-			-> join('fox_auth_role c','c.id = b.role_id')
+			-> join('auth_role c','c.id = b.role_id')
 			-> field('c.name as role_name')
 			-> order('id as')
 			-> select();
-		
-		return $data;
+		if ($data) 
+		{
+			$this -> success('获取成功',$data);
+		}
+		$this -> error('获取失败');
 
 	}
 	
-	//管理员添加
+	/**
+	 * @api {post} admin/user/add_man_user 管理员添加
+	 * @apiGroup user
+	 * @apiName add_man_user
+	 * @apiParam {String} email 邮箱.
+	 * @apiParam {String} name 用户名.
+	 * @apiParam {String} password 密码.
+	 * @apiParam {int} status 状态.
+	 * @apiParam {int} role_id 角色id.
+	 * @apiSuccess {String} msg 信息提示.
+	 * @apiSuccess {int} code  状态码.
+	 */
 	public function add_man_user()
 	{
-		$data        = $this->request->param('data');
-		if (!is_array($data)) 
-		{
-			return ['data'=>'数据格式为数组','code'=>101];
-		}
-		$email       = $data['email'];
-		$name        = $data['name'];
-		$password    = $data['password'];
-		$status 	 = $data['status'];
-		$role 	 = $data['role'];
-		if (empty($email)||empty($name)||empty($password)||empty($password)) 
-		{
-			return ['data'=>'条件不足，邮箱或密码或用户名或角色为空','code'=>101];
-		}
+		$input       = $this->request->param();
+		$email       = isset($input['email']) ? $input['email'] : $this->error('email参数不存在');
+		$name        = isset($input['name']) ? $input['name'] : $this->error('name参数不存在');
+		$password    = isset($input['password']) ? $input['password'] : $this->error('password参数不存在');
+		$status 	 = isset($input['status']) ? $input['status'] : $this->error('status参数不存在');
+		$role_id 	 = isset($input['role_id']) ? $input['role_id'] : $this->error('role_id参数不存在');
 		if (!preg_match("/([\w\-]+\@[\w\-]+\.[\w\-]+)/",$email)) 
 		{
-		  return ['data'=>'无效的 email 格式','code'=>101];
+			$this -> error('无效的 email 格式');
 		}
-		$email_exits = db('fox_admin_user') -> where(['email'=>$email]) -> find();
+		$email_exits = db('admin_user') -> where(['email'=>$email]) -> find();
 		if ($email_exits) 
 		{
-			 return ['data'=>'此邮箱已存在','code'=>101];
+			  $this -> error('此邮箱已存在');
 		}
-		$email_exits = db('fox_admin_user') -> where(['name'=>$name]) -> find();
+		$email_exits = db('admin_user') -> where(['name'=>$name]) -> find();
 		if ($email_exits) 
 		{
-			 return ['data'=>'此用户名已存在','code'=>101];
+			 $this -> error('此用户名已存在');
 		}
 		$create_time = time();
 		$params = [
@@ -76,65 +89,72 @@ class User extends Common
 			'create_time' => $create_time,
 			'avatar'      => 'avatar.jpg'
 		];
-		$state = db('fox_admin_user') -> insert($params);
+		$state = db('admin_user') -> insert($params);
 		if ($state) 
 		{
-			$data_exits = db('fox_admin_user') -> where(['email'=>$email]) -> find();
-			db('fox_role_group') -> insert(['role_id'=>$role,'user_id' =>$data_exits['id']]);
-			return ['data'=>'添加成功','code'=>200];
+			$data_exits = db('admin_user') -> where(['email'=>$email]) -> find();
+			db('role_group') -> insert(['role_id'=>$role_id,'user_id' =>$data_exits['id']]);
+			$this -> success('添加成功');
 		}
-		return ['data'=>'添加失败','code'=>101];
+		 $this -> error('添加失败');
 	}
 	
-	//删除管理员
+	/**
+	 * @api {post} admin/user/del_man_user 删除管理员
+	 * @apiGroup user
+	 * @apiName del_man_user
+	 * @apiParam {int} id 管理员id.
+	 * @apiSuccess {String} msg 信息提示.
+	 * @apiSuccess {int} code  状态码.
+	 */
 	public function del_man_user()
 	{
-		$id        = $this->request->param('id');
-		if (empty($id)) 
-		{
-			return ['data'=>'参数为空','code'=>101];
-		}
+		$input        = $this->request->param();
+		$id 	     = isset($input['id']) ? $input['id'] : $this->error('id参数不存在');
 		if (1==$id) 
 		{
-			return ['data'=>'此用户不能删除','code'=>101];
+			$this -> error('此用户不能删除');
 		}
-		$id_exits = db('fox_admin_user') -> where(['id'=>$id]) -> find();
+		$id_exits = db('admin_user') -> where(['id'=>$id]) -> find();
 		if (!$id_exits) 
 		{
-			return ['data'=>'要删除的数据不存在','code'=>101];
+			$this -> error('要删除的数据不存在');
 		}
-		$status = db('fox_admin_user') -> where(['id'=>$id]) -> delete();
-		if ($status) 
+		$status = db('admin_user') -> where(['id'=>$id]) -> delete();
+		$state  = db('role_group') -> where(['user_id'=>$id]) -> delete();
+		if ($status&&$state) 
 		{
-			db('fox_role_group') -> where(['user_id'=>$id]) -> delete();
-			return ['data'=>'删除成功','code'=>200];
+			$this -> success('删除成功');
 		}
-		return ['data'=>'删除失败','code'=>101];
+		$this -> error('删除失败');
+
 	}
-	//编辑管理员
+	/**
+	 * @api {post} admin/user/edit_man_user 编辑管理员
+	 * @apiGroup user
+	 * @apiName edit_man_user
+	 * @apiParam {String} email 邮箱.
+	 * @apiParam {String} name 用户名.
+	 * @apiParam {String} password 密码.
+	 * @apiParam {int} status 状态.
+	 * @apiParam {int} role_id 角色id.
+	 * @apiSuccess {String} msg 信息提示.
+	 * @apiSuccess {int} code  状态码.
+	 */
 	public function edit_man_user()
 	{
-		$data        = $this->request->param('data');
-		if (!is_array($data)) 
-		{
-			return ['data'=>'数据格式为数组','code'=>101];
-		}
-		$email       = $data['email'];
-		$name        = $data['name'];
+		$input        = $this->request->param();
+	    $id 	     = isset($input['id']) ? $input['id'] : $this->error('id参数不存在');
+		$email       = isset($input['email']) ? $input['email'] : $this->error('email参数不存在');
+		$name        = isset($input['name']) ? $input['name'] : $this->error('name参数不存在');
 		$password    = isset($data['password'])?$data['password']:null;
-		$status 	 = $data['status'];
-		$role 	 	 = $data['role_id'];
-		$id 	     = $data['id'];
-		if (empty($email)||empty($name)||empty($role)) 
-		{
-			return ['data'=>'条件不足，邮箱或密码或用户名或角色为空','code'=>101];
-		}
+		$status 	 = isset($input['status']) ? $input['status'] : $this->error('status参数不存在');
+		$role_id 	 = isset($input['role_id']) ? $input['role_id'] : $this->error('role_id参数不存在');
 		if (1==$id) 
 		{
-			return ['data'=>'此用户不能修改','code'=>101];
+			$this -> error('此用户不能修改');
 		}
 		$update_time = time();
-		
 		if (empty($password)) 
 		{
 			$params = [
@@ -143,12 +163,14 @@ class User extends Common
 				'status'      => $status,
 				'update_time' => $update_time
 			];
-			$status = db('fox_admin_user') -> where(['id'=>$id]) -> update($params);
-			$status1 = db('fox_role_group') -> where(['user_id'=>$id]) -> update(['role_id'=>$role]);
-			if ($status||$status1) {
-				return ['data'=>'修改成功','code'=>200];
+			$status = db('admin_user') -> where(['id'=>$id]) -> update($params);
+			$status1 = db('role_group') -> where(['user_id'=>$id]) -> update(['role_id'=>$role_id]);
+			if ($status||$status1) 
+			{
+				$this -> success('修改成功');
 			}
-			return ['data'=>'失败','code'=>101];
+			$this -> error('修改失败');
+
 		}else{
 			$params = [
 				'name'        => $name,
@@ -157,13 +179,15 @@ class User extends Common
 				'update_time' => $update_time,
 				'password'    => fox_password($password)
 			];
-			$status = db('fox_admin_user') -> where(['id'=>$id]) -> update($params);
-			$status1 = db('fox_role_group') -> where(['user_id'=>$id]) -> update(['role_id'=>$role]);
-			if ($status||$status1) {
-				return ['data'=>'修改成功','code'=>200];
+			$status = db('admin_user') -> where(['id'=>$id]) -> update($params);
+			$status1 = db('role_group') -> where(['user_id'=>$id]) -> update(['role_id'=>$role]);
+			if ($status||$status1) 
+			{
+				$this -> success('修改成功');
 			}
-			return ['data'=>'修改失败','code'=>101];
+			$this -> error('修改失败');
 		}
 	}
-	
+
+
 }

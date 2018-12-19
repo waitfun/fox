@@ -1,11 +1,6 @@
 <?php
 
-/**
- * @Author: HP
- * @Date:   2018-03-16 12:15:59
- * @Last Modified by:   HP
- * @Last Modified time: 2018-03-27 10:51:19
- */
+
 namespace app\common\lib;
 use think\exception\HttpException;
 

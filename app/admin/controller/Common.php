@@ -2,25 +2,27 @@
 namespace app\admin\controller;
 use think\Request;
 use auth\Auth;
-use think\Controller;
-use \Firebase\JWT\JWT;
+use think\exception\HttpResponseException;
 use app\common\lib\HttpExceptions;
+use think\Response;
+use app\common\lib\Token;
 
-class Common //extends Controller
+class Common 
 {
 	protected $request;
 	protected $cache;
+	protected $response;
 	public function __construct()
     {
-		$this->request = request();
+		$this->request  = request();
 		$info          =  $this->request->header();
 		$token         = isset($info['authorization'])?$info['authorization']:null;
 		if (empty($token)) 
 		{
 			throw new HttpExceptions('未授权', 'Unauthorized');
 		}
-		$decoded_token = JWT::decode($token, config('token_key'), array('HS256'));
-		if ($decoded_token->exp <time())
+		$access_token = Token::decryptAccessToken($token);
+		if ($access_token['exp'] < time())
 		{
 			throw new HttpExceptions('未授权', 'Unauthorized');
 		}
@@ -28,19 +30,20 @@ class Common //extends Controller
 		{
 			throw new HttpExceptions('未授权', 'Unauthorized');
 		}
-		$userId       = $decoded_token->data->id;
+		
 		$this ->cache = cache('Auth_'.$token);
-		$role_id      =$decoded_token->data->role_id;
-		$this -> checkAccess($userId,$role_id);
+		$role_id      = $this ->cache['role_id'];
+		$userid       = $this ->cache['id'];
+		$this -> checkAccess($userid,$role_id);
     }
      /**
      *  检查后台用户访问权限
+     * @access protected
      * @param int $userId 后台用户id
      * @return boolean 检查通过返回true
      */
-    public function checkAccess($userId,$role_id)
+    protected function checkAccess($userId,$role_id)
     {
-    	//$userId = 1;
        // 如果用户id是1，则无需判断
         if ($userId == 1) {
             return true;
@@ -62,5 +65,65 @@ class Common //extends Controller
 	    }
 	    
     }
+    /**
+	  * 生成树形结构
+	  * @access protected
+	  * @param mixed $arr 数据集
+	  * @return String
+	  */
+    protected function tree($arr)
+	{
+	    $items = [];
+	    foreach($arr as $value){
+	        $items[$value['id']] = $value;
+	    }
+	    $tree = [];
+	    foreach($items as $key => $item){
+	        if(isset($items[$item['parent_id']])){
+	            $items[$item['parent_id']]['children'][] = &$items[$key];
+	        }else{
+	            $tree[] = &$items[$key];
+	        }
+	    }
+	    return $tree;
+	}
+	/**
+	  * 错误处理
+	  * @access protected
+	  * @param mixed $msg 提示信息
+	  * @param mixed $data 返回的数据
+	  * @param int $code 状态码
+	  * @return void
+	  */
+	protected  function error($msg = '',$data = '',$code = 101)
+    {
+    	$result = [
+            'code' => $code,
+            'msg'  => $msg,
+            'data' => $data,
+        ];
+        $type      = 'json';
+        $response = Response::create($result, $type);
+        throw new HttpResponseException($response);
+    }
+     /**
+	  * 操作成功处理
+	  * @access protected
+	  * @param mixed $msg 提示信息
+	  * @param mixed $data 返回的数据
+	  * @param int $code 状态码
+	  * @return void
+	  */
+ 	protected function success($msg = '', $data = '', $code = '200')
+ 	{
+ 		$result = [
+            'code' => $code,
+            'msg'  => $msg,
+            'data' => $data,
+        ];
+        $type      = 'json';
+        $response = Response::create($result, $type);
+        throw new HttpResponseException($response);
+ 	}
    
 }

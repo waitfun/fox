@@ -1,0 +1,17 @@
+{
+
+  "name": "小狐狸",
+
+  "version": "0.1.0",
+
+  "description": "小狐狸api文档",
+
+  "apidoc": {
+
+    "title": "小狐狸api文档",
+
+    "url" : "https://api.github.com/v1"
+
+  }
+
+}
