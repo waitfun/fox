@@ -45,22 +45,39 @@ class Menu extends Common
 		$role_id = $this ->cache['role_id'];
 		if ($userid == 1||$role_id ==1) 
 		{
-			$result   = db('admin_menu')
+			//从缓存获取
+			$menu_cache = cache('admin_menu_'.$role_id);
+			if ($menu_cache) 
+			{
+				 $this -> success('获取成功',$menu_cache);
+			}else{
+				$result   = db('admin_menu')
 				->where(['status'=>0])
 				->field('id,parent_id,title,name,icon')
 				->select();
-		    $res      = $this -> tree($result);
-
-		   $this -> success('获取成功',$res);
+		    	$res      = $this -> tree($result);
+		    	cache('admin_menu_'.$role_id,$res);
+		    	$this -> success('获取成功',$res);
+			}
 		}else{
 			
-			$result   = db('admin_menu_access')->where(['status'=>0,'role_id'=> $role_id])->select();
-		    $res      = $this -> tree($result);
-			if(empty($res))
+		    //从缓存获取
+			$menu_cache = cache('admin_menu_'.$role_id);
+			if ($menu_cache) 
 			{
-				return db('admin_menu')->where(['id'=>1,'status'=>0])->select();
-			}
-		    return $res;
+				 $this -> success('获取成功',$menu_cache);
+			}else{
+				$result   = db('admin_menu_access')->where(['status'=>0,'role_id'=> $role_id])->select();
+			    $res      = $this -> tree($result);
+				if(empty($res))
+				{
+					//没有分配权限，默认首页
+					$data = db('admin_menu')->where(['id'=>1,'status'=>0])->select();
+					cache('admin_menu_'.$role_id,$data);
+					$this -> success('获取成功',$data);
+				}
+		    	cache('admin_menu_'.$role_id,$res);
+		    	$this -> success('获取成功',$res);
 		}
 		
 	}

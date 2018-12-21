@@ -58,6 +58,7 @@ class Setting extends Common
 		$status = db('website_setup') -> where(['id'=>1]) -> update($params);
 		if ($status) 
 		{
+			cache('website_setup',null);
 			$this->success('修改成功');
 		}
 		$this->error('修改失败');
@@ -66,11 +67,19 @@ class Setting extends Common
 	//获取网站信息
 	public function fetch_website()
 	{
-		$res = db('website_setup') -> find();
-		if ($res) 
+		$cache = cache('website_setup');
+		if ($cache) 
 		{
-			$this->success('获取成功',$res);
+			$this->success('获取成功',$cache);
+		}else{
+			$res = db('website_setup') -> find();
+			if ($res) 
+			{
+				$cache = cache('website_setup',$res);
+				$this->success('获取成功',$res);
+			}
+			$this->error('获取失败');
 		}
-		$this->error('获取失败');
+		
 	}
 }
