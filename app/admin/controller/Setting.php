@@ -13,35 +13,24 @@ class Setting extends Common
 	//更改密码
 	public function change_password()
 	{
-		$data        = $this->request->param('data');
-		if (!is_array($data)) 
-		{
-			return ['data'=>'数据格式为数组','code'=>101];
-		}
-		$old_password        = isset($data['old_password'])?$data['old_password']:null;
-		$new_password        = isset($data['new_password'])?$data['new_password']:null;
-		$new_again_password  = isset($data['new_again_password'])?$data['new_again_password']:null;
-		if (empty($old_password)||empty($new_password)||empty($new_again_password)) 
-		{
-			return ['data'=>'条件不足，旧密码或新密码为空','code'=>101];
-		}
-		if ($new_password != $new_again_password ) 
-		{
-			return ['data'=>'两次输入的新密码不一样','code'=>101];
-		}
+		$input         = $this->request->param();
+		$old_password  = isset($data['old_password'])?$data['old_password']:$this->error('缺少old_password参数');
+		$new_password  = isset($data['new_password'])?$data['new_password']:$this->error('缺少new_password参数');
+		$new_again_password  = isset($data['new_again_password'])?$data['new_again_password']:$this->error('缺少new_again_password参数');
+		
 		if (strlen ($new_password)<8 || strlen ($new_again_password)<8 ) 
 		{
-			return ['data'=>'密码长度至少8位','code'=>101];
+			$this->error('密码长度至少8位');
 		}
 		$userid = $this ->cache['id'];
 		$pswd_exits = db('admin_user') -> where(['id'=>$userid]) -> find();
 		if (fox_password($old_password)!=$pswd_exits['password']) 
 		{
-			return ['data'=>'旧密码错误','code'=>101];
+			$this->error('旧密码错误');
 		}
 		if (fox_password($new_password)==$pswd_exits['password']) 
 		{
-			return ['data'=>'新密码和旧密码不能一样','code'=>101];
+			$this->error('新密码和旧密码不能一样');
 		}
 		$status = db('admin_user') -> where(['id'=>$userid])->update(['password'=>fox_password($new_password)]);
 		if ($status) 
@@ -49,8 +38,39 @@ class Setting extends Common
 			$info =  $this->request->header();
 			$token = isset($info['authorization'])?$info['authorization']:null;
 			cache('Auth_'.$token, null);
-			return ['data'=>'修改成功','code'=>200];
+			$this->success('修改成功');
 		}
-		return ['data'=>'修改失败','code'=>101];
+		$this->error('修改失败');
+	}
+	//设置网站信息
+	public function create_website()
+	{
+		$input       = $this->request->param();
+		$params['site_name'] = $input['site_name'];
+		$params['site_seo_title'] = $input['site_seo_title'];
+		$params['site_seo_keywords'] = $input['site_seo_keywords'];
+		$params['site_seo_description'] = $input['site_seo_description'];
+		$params['website_icp'] = $input['website_icp'];
+		$params['website_email'] = $input['website_email'];
+		$params['website_count'] = $input['website_count'];
+		$params['website_beian'] = $input['website_beian'];
+
+		$status = db('website_setup') -> where(['id'=>1]) -> update($params);
+		if ($status) 
+		{
+			$this->success('修改成功');
+		}
+		$this->error('修改失败');
+
+	}
+	//获取网站信息
+	public function fetch_website()
+	{
+		$res = db('website_setup') -> find();
+		if ($res) 
+		{
+			$this->success('获取成功',$res);
+		}
+		$this->error('获取失败');
 	}
 }

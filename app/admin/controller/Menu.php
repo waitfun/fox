@@ -136,7 +136,7 @@ class Menu extends Common
 	{
 		if ($this->request->isPost())
 		{
-			$input           = is_array($this->request->param('data'))?$this->request->param('data') : $this->error('data参数不存在');
+			$input           = $this->request->param();
 			$params['name']  = isset($input['name']) ? $input['name'] : $this->error('name参数不存在');
 			$params['title'] = isset($input['title']) ? $input['title'] : $this->error('title参数不存在');
 			$id              = isset($input['id']) ? $input['id'] : $this->error('id参数不存在');
@@ -166,7 +166,7 @@ class Menu extends Common
 	{
 		if ($this->request->isPost())
 		{
-			$input = $this->request->param('data');
+			$input = $this->request->param();
 			$params['name']  = isset($input['name']) ? $input['name'] : $this->error('name参数不存在');
 			$params['title'] = isset($input['title']) ? $input['title'] : $this->error('title参数不存在');
 			$params['parent_id'] = isset($input['id']) ? $input['id'] : $this->error('id参数不存在');
