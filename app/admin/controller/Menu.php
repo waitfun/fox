@@ -78,6 +78,7 @@ class Menu extends Common
 				}
 		    	cache('admin_menu_'.$role_id,$res);
 		    	$this -> success('获取成功',$res);
+		    }
 		}
 		
 	}
