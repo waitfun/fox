@@ -35,7 +35,6 @@ class Mailer extends Common
 		$params['email_password'] =  isset($input['email_password'])? $input['email_password']:$this->error('缺少email_password参数');
 		$params['from_name']      =  isset($input['from_name'])? $input['from_name']:$this->error('缺少from_name参数');
 		$params['from']           =  isset($input['from'])? $input['from']:$this->error('缺少from参数');
-		$params['style']          =  isset($input['style'])? $input['style']:$this->error('缺少style参数');
 		$params['stmp_secure'] =  isset($input['stmp_secure'])? $input['stmp_secure']:$this->error('缺少stmp_securet参数');
 		$status = set_system_option('email_site',$params);
 		if ($status) 
@@ -92,7 +91,7 @@ class Mailer extends Common
 	    // 设置SMTPSecure。
 	   //设置使用ssl加密方式登录鉴权   企业邮箱必须关闭,个人邮箱才需要
 	   // if ($res['style'] == 2) {
-	    	$mail->SMTPSecure =  $res['stmp_secure'];
+	    $mail->SMTPSecure =  $res['stmp_secure'];
 	   // }
 	    
 	    // 设置SMTP服务器端口。
