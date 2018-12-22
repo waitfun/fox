@@ -40,7 +40,7 @@ class Mailer extends Common
 		$status = set_system_option('email_site',$params);
 		if ($status) 
 		{
-			cache('option_email_site',null);
+			cache('options_email_site',null);
 			$this->success('修改成功');
 		}
 		$this->error('修改失败');
