@@ -95,7 +95,9 @@ class Portal //extends Common
     }
     public function tt()
     {
-    	phpinfo();
+        //ltSY25qrmdrI2Zyro8fI+vMrw
+        //dsawewewewewqed
+    	return de('ltSY25qrmdrI2Zyro8fI','wewe');
     }
 
     function send_email()

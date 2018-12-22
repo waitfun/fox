@@ -36,6 +36,7 @@ class Mailer extends Common
 		$params['from_name']      =  isset($input['from_name'])? $input['from_name']:$this->error('缺少from_name参数');
 		$params['from']           =  isset($input['from'])? $input['from']:$this->error('缺少from参数');
 		$params['stmp_secure'] =  isset($input['stmp_secure'])? $input['stmp_secure']:$this->error('缺少stmp_securet参数');
+		$params['email_password'] = encrypt_data($params['email_password']);
 		$status = set_system_option('email_site',$params);
 		if ($status) 
 		{
@@ -104,7 +105,7 @@ class Mailer extends Common
 	    // 设置用户名和密码。
 	    $mail->Username =  $res['email_username'];
 	    //密码为企业邮箱登录密码,个人为邮箱授权码
-	    $mail->Password =  $res['email_password'];
+	    $mail->Password =  decrypt_data($res['email_password']);
 	    // 发送邮件。
 	    if (!$mail->Send()) {
 	        $mailError = $mail->ErrorInfo;
