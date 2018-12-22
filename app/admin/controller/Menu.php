@@ -3,10 +3,12 @@ namespace app\admin\controller;
 use think\Request;
 use auth\Auth;
 use think\Cache;
+use Rcache\Rcache;
 use app\admin\controller\Common;
 
 class Menu extends Common
 {
+	//aitrzqtyixkkcagh
 	public function __construct()
     {
     	parent::__construct();
@@ -60,7 +62,6 @@ class Menu extends Common
 		    	$this -> success('获取成功',$res);
 			}
 		}else{
-			
 		    //从缓存获取
 			$menu_cache = cache('admin_menu_'.$role_id);
 			if ($menu_cache) 
@@ -131,6 +132,7 @@ class Menu extends Common
 			$status = db('admin_menu') -> where(['id'=>$id]) -> delete();
 			if ($status) 
 			{
+				Rcache::prefix_rm('admin_menu_*');
 				$this->success('删除成功');
 			}
 			$this->error('删除失败');
@@ -161,6 +163,7 @@ class Menu extends Common
 			$status          = db('admin_menu') ->where(['id'=>$id])->update($params);
 			if ($status) 
 			{
+				Rcache::prefix_rm('admin_menu_*');
 				$this->success('修改成功');
 			}
 			$this->error('修改失败');
@@ -191,6 +194,7 @@ class Menu extends Common
 			$status = db('admin_menu') ->insert($params);
 			if ($status) 
 			{
+				Rcache::prefix_rm('admin_menu_*');
 				$this->success('添加成功');
 			}
 			$this->error('添加失败');
@@ -222,6 +226,7 @@ class Menu extends Common
 			$status = db('admin_menu') ->insert($params);
 			if ($status) 
 			{
+				Rcache::prefix_rm('admin_menu_*');
 				$this->success('添加成功');
 			}
 			$this->error('添加失败');

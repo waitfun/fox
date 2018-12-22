@@ -39,3 +39,66 @@ function curl_get($url)
     curl_close($info);
     return $result;
 }
+
+
+/**
+ * 设置系统配置，通用
+ * @param string $key 配置键值,都小写
+ * @param array $data 配置值，数组
+ * @param bool $replace 是否完全替换
+ * @return bool 是否成功
+ */
+function set_system_option($key, $data, $replace = false)
+{
+
+    $key        = strtolower($key);
+    $option     = [];
+    $findOption = db('website_option')->where('option_name', $key)->find();
+    if ($findOption) 
+    {
+        if (!$replace) 
+        {
+            $oldOptionValue = json_decode($findOption['option_value'], true);
+            if (!empty($oldOptionValue)) 
+            {
+                $data = array_merge($oldOptionValue, $data);
+            } 
+        }
+
+        $option['option_value'] = json_encode($data,JSON_UNESCAPED_UNICODE);
+        $status = db('website_option')->where('option_name', $key)->update($option);
+        if ($status) 
+        {
+           return true;
+        }
+       return false;
+    } else {
+        $option['option_name']  = $key;
+        $option['option_value'] = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $status = db('website_option')->insert($option);
+        if ($status) 
+        {
+           return true;
+        }
+        return false;
+    }
+}
+/**
+ * 获取系统配置，通用
+ * @param string $key 配置键值,都小写
+ * @return array
+ */
+function get_system_option($key)
+{
+    $key         = strtolower($key);
+    $optionValue = cache('options_' . $key);
+
+    if (empty($optionValue)) {
+        $optionValue = db('website_option') ->where(['option_name'=> $key])-> find();
+        if (!empty($optionValue)) {
+            $optionValue = json_decode($optionValue['option_value'], true);
+            cache('options_' . $key, $optionValue);
+        }
+    }
+    return $optionValue;
+}

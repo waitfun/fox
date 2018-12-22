@@ -3,6 +3,7 @@ namespace app\admin\controller;
 use think\Cache;
 use app\admin\controller\Common;
 use app\common\lib\HttpExceptions;
+use Rcache\Rcache;
 
 class Setting extends Common
 {
@@ -46,19 +47,19 @@ class Setting extends Common
 	public function create_website()
 	{
 		$input       = $this->request->param();
-		$params['site_name'] = $input['site_name'];
-		$params['site_seo_title'] = $input['site_seo_title'];
-		$params['site_seo_keywords'] = $input['site_seo_keywords'];
-		$params['site_seo_description'] = $input['site_seo_description'];
-		$params['website_icp'] = $input['website_icp'];
-		$params['website_email'] = $input['website_email'];
-		$params['website_count'] = $input['website_count'];
-		$params['website_beian'] = $input['website_beian'];
+		$params['site_name'] = isset($input['site_name']) ? $input['site_name']:'';
+		$params['site_seo_title'] =  isset($input['site_seo_title'])? $input['site_seo_title']:'';
+		$params['site_seo_keywords'] =  isset($input['site_seo_keywords'])? $input['site_seo_keywords']:'';
+		$params['site_seo_description'] =  isset($input['site_seo_description'])? $input['site_seo_description']:'';
+		$params['website_icp'] =  isset($input['website_icp'])? $input['website_icp']:'';
+		$params['website_email'] =  isset($input['website_email'])? $input['website_email']:'';
+		$params['website_count'] =  isset($input['website_count'])? $input['website_count']:'';
+		$params['website_beian'] =  isset($input['website_beian'])? $input['website_beian']:'';
 
-		$status = db('website_setup') -> where(['id'=>1]) -> update($params);
+		$status = set_system_option('website_site',$params);
 		if ($status) 
 		{
-			cache('website_setup',null);
+			cache('options_website_site',null);
 			$this->success('修改成功');
 		}
 		$this->error('修改失败');
@@ -67,18 +68,30 @@ class Setting extends Common
 	//获取网站信息
 	public function fetch_website()
 	{
-		$cache = cache('website_setup');
-		if ($cache) 
+		$res =get_system_option('website_site');
+		if ($res) 
 		{
-			$this->success('获取成功',$cache);
+			$this->success('获取成功',$res);
 		}else{
-			$res = db('website_setup') -> find();
-			if ($res) 
-			{
-				$cache = cache('website_setup',$res);
-				$this->success('获取成功',$res);
-			}
 			$this->error('获取失败');
+		}
+	}
+	//清除缓存
+	public function clean_cache()
+	{
+		$userid = $this ->cache['id'];
+		$role_id = $this ->cache['role_id'];
+		if ($role_id == 1||$userid ==1) 
+		{
+			//菜单缓存
+			Rcache::prefix_rm('admin_menu_*');
+			//网站信息缓存
+			cache('options_website_setup',null);
+			$this->success('删除成功');
+		}else{
+			$key = 'admin_menu_'.$role_id;
+			cache($key,null);
+			$this->success('删除成功');
 		}
 		
 	}

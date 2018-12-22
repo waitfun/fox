@@ -5,6 +5,9 @@ use app\common\lib\HttpExceptions;
 use think\exception\HttpResponseException;
 use think\Response;
 use app\common\lib\Token;
+use PHPMailer\PHPMailer\PHPMailer;
+use Rcache\Rcache;
+
 
 class Portal //extends Common
 {
@@ -92,7 +95,53 @@ class Portal //extends Common
     }
     public function tt()
     {
-    	$token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NDUxMTg0NDgsImV4cCI6MTU0NTcyMzI0OCwiZGF0YSI6eyJpZCI6MiwibmFtZSI6InVzZXIwMSIsInBhc3N3b3JkIjoiZGVlMTJiYTc3Y2M3NDUxODBlODE1NGM0NDc2ZDg5MGMiLCJuaWNrbmFtZSI6bnVsbCwiZW1haWwiOm51bGwsInBob25lIjpudWxsLCJhdmF0YXIiOiJodHRwOlwvXC9pbWc0LmltZ3RuLmJkaW1nLmNvbVwvaXRcL3U9OTY3Mzk1NjE3LDM2MDEzMDIxOTUmZm09MjYmZ3A9MC5qcGciLCJjcmVhdGVfdGltZSI6bnVsbCwidXBkYXRlX3RpbWUiOm51bGwsInN0YXR1cyI6MCwicm9sZV9pZCI6Miwicm9sZV9uYW1lIjoiXHU2NjZlXHU5MDFhXHU3YmExXHU3NDA2XHU1NDU4IiwibG9naW5faXAiOiIxMjcuMC4wLjEiLCJsb2dpbl90aW1lIjoiMjAxOC0xMi0xNiAxNzoxMjoxMSIsImxvZ2luX2FkZHJlc3MiOiIgICAgIn19.2SLcHE2KN0P-MX6qPV-wekmVC20uMGQxLkBJQIpAqtA";
-    	return Token::decryptAccessToken($token);
+    	
+    	return Rcache::prefix_rm('admin_menu_2');
     }
+
+    function send_email()
+{
+    $mail        = new PHPMailer();
+    // 设置PHPMailer使用SMTP服务器发送Email
+    $mail->IsSMTP();
+    $mail->IsHTML(true);
+    //$mail->SMTPDebug = 3;
+    // 设置邮件的字符编码，若不指定，则为'UTF-8'
+    $mail->CharSet = 'UTF-8';
+    // 添加收件人地址，可以多次使用来添加多个收件人
+    $mail->AddAddress('waitfun319@qq.com');
+    // 设置邮件正文
+    $mail->Body = '23333';
+    // 设置邮件头的From字段。
+    $mail->From = 'waitfun@waitfun.cn';
+    // 设置发件人名字
+    $mail->FromName ='waitfun';
+    // 设置邮件标题
+    $mail->Subject = 'hello';
+    // 设置SMTP服务器。
+    $mail->Host = 'smtp.exmail.qq.com';
+    //by Rainfer
+    // 设置SMTPSecure。
+   // $Secure           = $smtpSetting['smtp_secure'];
+     $mail->SMTPSecure = '';
+    // 设置SMTP服务器端口。
+   // $port       = $smtpSetting['port'];
+    $mail->Port = '25';
+    // 设置为"需要验证"
+    $mail->SMTPAuth    = true;
+    $mail->SMTPAutoTLS = false;
+    $mail->Timeout     = 10;
+    // 设置用户名和密码。
+    $mail->Username = 'waitfun@waitfun.cn';
+    $mail->Password = 'Family1994';
+    // 发送邮件。
+    if (!$mail->Send()) {
+        $mailError = $mail->ErrorInfo;
+        return ["error" => 1, "message" => $mailError];
+    } else {
+        return ["error" => 0, "message" => "success"];
+    }
+}
+
+
 }
