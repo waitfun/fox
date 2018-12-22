@@ -1,7 +1,7 @@
 <?php
 
-namespace Rcache;
-use Rcache\CacheBase;
+namespace rcache;
+use rcache\CacheBase;
 
 class Rcache
 {

@@ -1,7 +1,7 @@
 <?php
 
-namespace Rcache;
-use Rcache\Driver;
+namespace rcache;
+use rcache\Driver;
 use think\facade\Config;
 
 class CacheBase extends Driver

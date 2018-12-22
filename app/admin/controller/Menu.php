@@ -3,7 +3,7 @@ namespace app\admin\controller;
 use think\Request;
 use auth\Auth;
 use think\Cache;
-use Rcache\Rcache;
+use rcache\Rcache;
 use app\admin\controller\Common;
 
 class Menu extends Common

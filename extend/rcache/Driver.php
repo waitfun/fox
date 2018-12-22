@@ -1,6 +1,6 @@
 <?php
 
-namespace Rcache;
+namespace rcache;
 
 /**
  * 缓存基础类
