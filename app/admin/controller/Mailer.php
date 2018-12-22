@@ -91,9 +91,9 @@ class Mailer extends Common
 	    //by Rainfer
 	    // 设置SMTPSecure。
 	   //设置使用ssl加密方式登录鉴权   企业邮箱必须关闭,个人邮箱才需要
-	    if ($res['style'] == 2) {
+	   // if ($res['style'] == 2) {
 	    	$mail->SMTPSecure =  $res['stmp_secure'];
-	    }
+	   // }
 	    
 	    // 设置SMTP服务器端口。
 	   // $port       = $smtpSetting['port'];
