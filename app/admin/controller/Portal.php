@@ -95,8 +95,7 @@ class Portal //extends Common
     }
     public function tt()
     {
-    	
-    	return Rcache::prefix_rm('admin_menu_2');
+    	phpinfo();
     }
 
     function send_email()
