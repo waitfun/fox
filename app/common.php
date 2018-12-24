@@ -162,3 +162,48 @@ function decrypt_data($data, $key='xVZrZ9RnIKNof2nbwF')
     }
     return $str;
 }
+//验证码生成
+function create_code($lenght)
+{
+    $chars = "0123456789";
+    $str = "";
+    for ($i = 0; $i < $lenght; $i++) {
+        $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+    }
+    return $str;
+}
+/**
+ * 检查手机格式，中国手机不带国家代码，国际手机号格式为：国家代码-手机号
+ * @param $mobile
+ * @return bool
+ */
+function check_mobile($mobile)
+{
+    if (preg_match('/(^(13\d|14\d|15\d|16\d|17\d|18\d|19\d)\d{8})$/', $mobile)) {
+        return true;
+    } else {
+        if (preg_match('/^\d{1,4}-\d{5,11}$/', $mobile)) {
+            if (preg_match('/^\d{1,4}-0+/', $mobile)) {
+                //不能以0开头
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+}
+//验证手机验证码
+function check_sms($code,$phoneNumber )
+{
+      
+    $sms_code = cache('sms_code_'.$phoneNumber);
+        //return date('Y-m-d H:i:s',strtotime(date('Y-m-d',time()))+60*60*24);
+    if ($sms_code！=$code) 
+    {
+        $this->success('验证码不正确');
+    }
+    if ($sms_code == null) 
+    {
+        $this->error('验证码已过期');
+    }
+}

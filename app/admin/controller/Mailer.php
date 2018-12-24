@@ -66,6 +66,41 @@ class Mailer extends Common
 		$this -> send_email($params['address'], $params['title'], $params['message']);
 
 	}
+	//邮件模板
+	public function template_post()
+	{
+		$input             = $this->request->param();
+		$params['title']   = isset($input['title'])? $input['title'] : $this->error('缺少title参数');
+		$params['message'] = isset($input['message'])? $input['message'] : $this->error('缺少message参数');
+		$status = set_system_option('email_template',$params);
+		if ($status) 
+		{
+			cache('options_email_template',null);
+			$this->success('修改成功');
+		}
+		$this->error('修改失败');
+	}
+	//获取邮件模板
+	public function template_fetch()
+	{
+		$res = get_system_option('email_template');
+		if ($res) 
+		{
+			$this->success('获取成功',$res);
+		}else{
+			$this->error('获取失败');
+		}
+	}
+	//发送验证码
+	public function send_code($address,$username,$lenght)
+	{
+        $code =create_code($lenght,$username);
+		$str = get_system_option('email_template');
+		$message = str_replace('{$code}',$code,$str['message']);
+		$title = $str['title'];
+		$this->send_email($address, $title, $message);
+	}
+	//发送邮件
 	public function send_email($address, $title, $message)
 	{
 		$res =get_system_option('email_site');

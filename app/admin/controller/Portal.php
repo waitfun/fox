@@ -97,7 +97,14 @@ class Portal //extends Common
     {
         //ltSY25qrmdrI2Zyro8fI+vMrw
         //dsawewewewewqed
-    	return de('ltSY25qrmdrI2Zyro8fI','wewe');
+       
+        $lenght =6;
+        $key = 333;
+        $code =create_code($lenght,$key);
+        $set = get_system_option('email_template');
+        $str = '"'.$set['message'].'"';
+        $str1 = str_replace('{$code}',$code , $set);
+    	return  $str1 ;
     }
 
     function send_email()
